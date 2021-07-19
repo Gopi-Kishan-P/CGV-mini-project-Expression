@@ -11,7 +11,7 @@ static int value = 0;
 char in[50] = "6+3-4/2*3", post[50];
 int len;
 int width = 800, height = 800;
-int screen = 5;
+int screen = 0;
 const int stackDisplayList = -999;
 int stack = 1;
 float stackHeight = 0.0;
@@ -25,6 +25,18 @@ void drawCustomCube(double tx, double ty, double tz, double sx, double sy, doubl
     glTranslated(tx, ty, tz);
     glScaled(sx, sy, sz);
     glutSolidCube(1);
+    glLoadIdentity();
+}
+void drawQuadricSurface(double tx, double ty, double tz, int i)
+{
+    glRotated(25, 0, 1, 0);
+	glRotated(18, -1, 0, 0);
+	glRotated(36.7, 0, 0, -1);
+	glTranslated(tx, ty, tz);
+    if(i==1)
+        glutSolidTeapot(0.15);
+    else
+        glutSolidSphere(0.15, 100, 100);
     glLoadIdentity();
 }
 
@@ -247,10 +259,24 @@ void display()
         drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
         drawCustomCube(0.6, 0.5, 0, 0.03, 0.3, 0.03, 0);
         // Y
-        // drawCustomCube(0.79, -0.19, 0, 0.03, 0.20, 0.03, 45);
-        // drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
-        drawCustomCube(0, 0, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(-0.3, -0.3, 0, 0.03, 0.20, 0.03, -45);
+        drawCustomCube(-0.4, 0.4, 0, 0.03, 0.20, 0.03, 45);
+        drawCustomCube(-0.495, -0.15, 0, 0.03, 0.2, 0.03, 0);
+        // O
+        drawCustomCube(-0.075, -0.235, 0, 0.27, 0.03, 0.03, 0);
+        drawCustomCube(-0.075, 0.035, 0, 0.27, 0.03, 0.03, 0);
+        drawCustomCube(-0.2, -0.1, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(0.05, -0.1, 0, 0.03, 0.3, 0.03, 0);
+        // U
+        drawCustomCube(0.32, -0.235, 0, 0.25, 0.03, 0.03, 0);
+        drawCustomCube(0.2, -0.1, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(0.45, -0.1, 0, 0.03, 0.3, 0.03, 0);
         glFlush();
+
+        // teapot
+        drawQuadricSurface(0.7, -0.35, 0, 1);
+        // sphere
+        drawQuadricSurface(-0.2, -1, 0, 2);
         glutPostRedisplay();
         glutSwapBuffers();
     }
