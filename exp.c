@@ -3,6 +3,11 @@
 #include <string.h>
 #include <math.h>
 
+static int menu_id;
+static int submenu_id;
+static int window;
+static int value = 0;
+
 char in[50] = "6+3-4/2*3", post[50];
 int len;
 int width = 800, height = 800;
@@ -22,6 +27,43 @@ void drawCustomCube(double tx, double ty, double tz, double sx, double sy, doubl
     glutSolidCube(1);
     glLoadIdentity();
 }
+
+void menu(int num){
+	if (num == 0)
+	{
+	glutDestroyWindow(window);
+	exit(0);
+	}
+	else{
+	value = num;
+	}
+	glutPostRedisplay();
+}
+
+void createMenu(void)
+{
+	submenu_id = glutCreateMenu(menu);
+	glutAddMenuEntry("Solve again", 2);
+	menu_id = glutCreateMenu(menu);
+	glutAddMenuEntry("Instructions", 1);
+	glutAddSubMenu("Exp", submenu_id);
+	glutAddMenuEntry("Quit", 0);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
+void display1(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	if (value == 1)
+	{
+		return; //glutPostRedisplay();
+	}
+	else if (value == 2)
+	{
+	
+	} 
+}
+
 
 void displayString(int x, int y, char *string, int font)
 {
@@ -216,6 +258,7 @@ int main(int argc, char **argv)
     glutCreateWindow("Infix and Postfix Expression");
     glutDisplayFunc(display);
     glutMouseFunc(mouseFunction);
+    createMenu();
     glutKeyboardFunc(keyboardFunction);
     glutMainLoop();
     return 0;
