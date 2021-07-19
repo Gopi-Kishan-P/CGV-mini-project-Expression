@@ -19,13 +19,14 @@ float stackHeight = 0.0;
 float try = 0;
 float no = 0;
 
-void obj(double tx, double ty, double tz, double sx, double sy, double sz)
+void drawCustomCube(double tx, double ty, double tz, double sx, double sy, double sz, double rz)
 {
-	glRotated(45, 0, 1, 0); 
-	glTranslated(tx, ty, tz);
-	glScaled(sx, sy, sz);
-	glutSolidCube(1);
-	glLoadIdentity();
+    glRotated(30, 0, 1, 0);
+    glRotated(rz, 0, 0, 1);
+    glTranslated(tx, ty, tz);
+    glScaled(sx, sy, sz);
+    glutSolidCube(1);
+    glLoadIdentity();
 }
 
 void menu(int num)
@@ -128,6 +129,7 @@ void myInit()
     glLoadIdentity();
     gluOrtho2D(0, width, 0, height);
     glMatrixMode(GL_MODELVIEW);
+
     glNewList(stackDisplayList, GL_COMPILE); // Display List
     glColor3f(0.6, 0.7, 1.0);
     displayString(60, 20, "STACK", 1);
@@ -146,6 +148,7 @@ void myInit()
     glVertex2f(250, 300);
 
     glEnd();
+    displayString(75, 25, "Stack", 2);
     glEndList();
 }
 
@@ -231,12 +234,42 @@ void display()
     }
     else if (screen == 5)
     {
+        float ambient[] = {1, 1, 1, 1};
+        float light_pos[] = {-1, -1, -1.3, 1};
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+        glEnable(GL_DEPTH_TEST);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.1, 0.2, 0.9, 1);
         glColor3f(1.0, 1.0, 1.0);
-        glutSolidCube(1);
+        // To Display THANK YOU
+        // T
+        drawCustomCube(-0.87, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(-0.87, 0.64, 0, 0.3, 0.03, 0.03, 0);
+        // H
+        drawCustomCube(-0.49, 0.5, 0, 0.25, 0.03, 0.03, 0);
+        drawCustomCube(-0.6, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(-0.35, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // A
+        drawCustomCube(-0.055, 0.5, 0, 0.15, 0.03, 0.03, 0);
+        drawCustomCube(0.22, 0.45, 0, 0.03, 0.35, 0.03, 25);
+        drawCustomCube(-0.35, 0.395, 0, 0.03, 0.35, 0.03, -25);
+        // N
+        drawCustomCube(0.56, 0.19, 0, 0.03, 0.35, 0.03, 40);
+        drawCustomCube(0.20, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(0.425, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // K
+        drawCustomCube(0.79, -0.19, 0, 0.03, 0.20, 0.03, 45);
+        drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
+        drawCustomCube(0.6, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // Y
+        // drawCustomCube(0.79, -0.19, 0, 0.03, 0.20, 0.03, 45);
+        // drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
+        drawCustomCube(0, 0, 0, 0.03, 0.3, 0.03, 0);
         glFlush();
         glutPostRedisplay();
         glutSwapBuffers();
