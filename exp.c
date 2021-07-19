@@ -77,10 +77,10 @@ void screen_menu(int num)
 {
     switch (num)
     {
-    case 9:
-    case 10:
-    case 11:
-    case 12:
+    case 9: screen = 0; break;
+    case 10: screen = 1; break;
+    case 11: screen = 3; break;
+    case 12: screen = 5; break;
         break;
     }
 }
@@ -93,12 +93,12 @@ void createMenu(void)
     submenu2 = glutCreateMenu(screen_menu);
     glutAddMenuEntry("Welcome Screen", 9);
     glutAddMenuEntry("Infix to Postfix Expression Screen", 10);
-    glutAddMenuEntry("Evaluation of Postfix Expression screen", 11);
+    glutAddMenuEntry("Evaluation of Postfix Expression Screen", 11);
     glutAddMenuEntry("End Screen", 12);
     sub_menu = glutCreateMenu(demo_menu);
-    glutAddMenuEntry("Press Left Mouse Button for Next screen", 5);
-    glutAddMenuEntry("Press UP key for Zoom In in End Screen", 6);
-    glutAddMenuEntry("Press DOWN key for Zoom Out in End Screen", 7);
+    glutAddMenuEntry("Press 'Left Mouse Button' to go to Next Screen", 5);
+    glutAddMenuEntry("Press 'N' to go to Next Screen", 6);
+    glutAddMenuEntry("Press 'Space Bar' to go to Next Screen", 7);
     glutAddMenuEntry("Press Q to quit and N to start", 8);
     menu_id = glutCreateMenu(menu);
     glutAddSubMenu("Instructions", sub_menu);
@@ -297,12 +297,19 @@ void display()
     if (screen == 0)
     {
         myInit();
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_DEPTH_TEST);
         displayWelcomeScreen();
         glutPostRedisplay();
         glutSwapBuffers();
     }
     else if (screen == 1)
     {
+        myInit();
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_DEPTH_TEST);
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'b');
         glClearColor(0.0, 0.0, 0.2, 1);
         for (int i = 0; i < len; i++)
@@ -338,6 +345,10 @@ void display()
     }
     else if (screen == 3)
     {
+        myInit();
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_DEPTH_TEST);
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'o');
         glClearColor(0.2, 0.1, 0, 0);
         for (int i = 0; i < len; i++)
@@ -444,6 +455,8 @@ void keyboardFunction(unsigned char key, int x, int y) // Keybard Input Function
 {
     if (key == 'Q' || key == 'q')
         exit(0);
+    if(key == 'n' || key == 'N' || key == ' ')
+        screen++;
 }
 
 void myReshape(int w, int h)
