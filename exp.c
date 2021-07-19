@@ -2,9 +2,11 @@
 #include <GL/glut.h>
 #include <string.h>
 #include <math.h>
+#include<ctype.h>
 
 static int menu_id;
 static int sub_menu;
+static int submenu2;
 static int submenu_id;
 static int window;
 static int value = 0;
@@ -41,8 +43,7 @@ void menu(int num)
       switch (num)
       {
         case 2:
-        case 3:
-        case 10: break;
+        case 3: break;
       }
 	}
 	glutPostRedisplay();
@@ -58,11 +59,27 @@ void demo_menu(int num)
     }
  }
 
+ void screen_menu(int num)
+{
+    switch(num)
+    {
+        case 9:
+        case 10: 
+        case 11:
+        case 12: break;
+    }
+ }
+
 void createMenu(void)
 { 
 	submenu_id = glutCreateMenu(menu);
-	glutAddMenuEntry("Kishore A H", 2);
-    glutAddMenuEntry("Gopi Kishan P", 3);
+	glutAddMenuEntry("Kishore A H ( 1AY18CS052 )", 2);
+    glutAddMenuEntry("Gopi Kishan P ( 1AY18CS040 )", 3);
+    submenu2 = glutCreateMenu(screen_menu);
+    glutAddMenuEntry("Welcome Screen",9);
+	glutAddMenuEntry("Infix to Postfix Expression Screen",10);
+	glutAddMenuEntry("Evaluation of Postfix Expression screen",11);
+	glutAddMenuEntry("End Screen",12);
     sub_menu=glutCreateMenu(demo_menu);
 	glutAddMenuEntry("Press Left Mouse Button for Next screen",5);
 	glutAddMenuEntry("Press UP key for Zoom In in End Screen",6);
@@ -70,10 +87,100 @@ void createMenu(void)
 	glutAddMenuEntry("Press Q to quit and N to start",8);
 	menu_id = glutCreateMenu(menu);
 	glutAddSubMenu("Instructions", sub_menu);
+    glutAddSubMenu("Screens", submenu2);
 	glutAddSubMenu("About", submenu_id);
 	glutAddMenuEntry("Quit", 0);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
+
+int F(char symbol) 
+{
+    switch(symbol)
+	{
+        case '+':
+        case '-': return 2;
+        case '*':
+        case '/': return 4;
+        case '#': return -1;
+        default: return 8; 
+     }
+}
+
+int G(char symbol) 
+{
+	switch(symbol)
+	{
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 3;
+        case '#': return 0;
+        default: return 7; 
+        }	
+}
+
+void infix_postfix(char infix[], char postfix[])
+{
+	int top, j, i;
+	char s[30];
+	char symbol;
+	top = -1;
+	s[++top] = '#';
+	j = 0;
+	for(i=0;i<strlen(infix);i++)
+	{
+		symbol = infix[i];
+		while(F(s[top]) > G(symbol))
+			postfix[j++] = s[top--];
+		if(F(s[top]) != G(symbol))
+			s[++top] = symbol;
+		else
+			top--;
+	}
+	while(s[top] != '#')
+		postfix[j++] = s[top--];
+	postfix[j] = '\0';
+}
+
+double compute(char symbol,double op1, double op2) 
+{
+	switch(symbol) 
+	{
+		case '+': return op1 + op2;
+		case '-': return op1 - op2; 
+		case '*': return op1 * op2; 
+		case '/': return op1 / op2;
+		default: return 0;
+	} 
+}
+
+void ev_postfix() //function for evalulation of postfix exp
+{
+	double s[20], res, op1, op2; 
+	int top, i;
+	char postfix[20], symbol; 
+
+	printf("\nEnter the postfix expression:\n"); 
+	scanf("%s",postfix);
+	top=-1;
+	for(i=0; i<strlen(postfix); i++) 
+	{
+		symbol= postfix[i]; 
+		if(isdigit(symbol))
+			s[++top]= symbol-'0'; 
+		else
+		{
+			op2 = s[top--]; 
+			op1 = s[top--];
+			res =compute(symbol, op1, op2); 
+			s[++top]= res;
+		} 
+	}
+	res =s[top--];
+	printf("\nThe result is:%f\n",res); 
+}
+
+
 
 void displayString(int x, int y, char *string, int font)
 {
@@ -111,8 +218,8 @@ void displayWelcomeScreen()
     displayString(360, 670, "AND", 1);
     displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1);
     displayString(500, 70, "Mini Project By : ", 2);
-    displayString(650, 45, "Gopi Kishan P", 2);
-    displayString(650, 20, "Kishore A H", 2);
+    displayString(500, 45, "Gopi Kishan P ( 1AY18CS040 )", 2);
+    displayString(500, 20, "Kishore A H ( 1AY18CS052 )", 2);
     displayString(10, 520, e1, 2);
     displayString(200, 300, "**** For Instructions, Click 'Right Mouse' Button ****", 2);
     // displayString(60, 120, "", 2);
@@ -165,7 +272,7 @@ void display()
     else if (screen == 1)
     {
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
-        glClearColor(0.4, 0.1, 0.0, 1);
+        glClearColor(0.0, 0.9, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
             char ch = infix[i];
@@ -200,7 +307,7 @@ void display()
     else if (screen == 3)
     {
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
-        glClearColor(0, 0, 0.3, 1);
+        glClearColor(0.1, 0.2, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
             char ch = infix[i];
