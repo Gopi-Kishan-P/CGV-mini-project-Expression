@@ -63,7 +63,7 @@ void demo_menu(int num)
 {
     switch(num)
     {
-        case 9:
+        case 9: 
         case 10: 
         case 11:
         case 12: break;
@@ -182,9 +182,21 @@ void ev_postfix() //function for evalulation of postfix exp
 
 
 
-void displayString(int x, int y, char *string, int font)
+void displayString(int x, int y, char *string, int font, char color)
 {
     int len, i;
+    switch (color)
+    {
+    case 'gb' : glColor3f(0.0,0.1,0.1);
+                break;
+    case 'rg' : glColor3f(0.1,0.1,0.0);
+                break;
+    case 'o' : glColor3f(0.1,0.0,0.1);
+                break;
+    
+    default:
+        break;
+    }
     glColor3f(0.1, 0.2, 1.0);
     glRasterPos2f(x, y);
     len = (int)strlen(string);
@@ -214,19 +226,19 @@ void displayWelcomeScreen()
         strcat(e1, temp);
     }
     glClearColor(0.8, 1.0, 0.6, 1);
-    displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1);
-    displayString(360, 670, "AND", 1);
-    displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1);
-    displayString(500, 70, "Mini Project By : ", 2);
-    displayString(500, 45, "Gopi Kishan P ( 1AY18CS040 )", 2);
-    displayString(500, 20, "Kishore A H ( 1AY18CS052 )", 2);
-    displayString(10, 520, e1, 2);
-    displayString(200, 300, "**** For Instructions, Click 'Right Mouse' Button ****", 2);
+    displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1,'rg');
+    displayString(360, 670, "AND", 1, 'rg');
+    displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1,'rg');
+    displayString(500, 70, "Mini Project By : ", 2,'rg');
+    displayString(500, 45, "Gopi Kishan P ( 1AY18CS040 )", 2, 'rg');
+    displayString(500, 20, "Kishore A H ( 1AY18CS052 )", 2, 'rg');
+    displayString(10, 520, e1, 2, 'rg');
+    displayString(200, 300, "**** For Instructions, Click 'Right Mouse' Button ****",2, 'gb');
     // displayString(60, 120, "", 2);
     // displayString(65, 50, "or", 2);
     // displayString(40, 30, "Press 'N' Key", 2);
     // displayString(45, 10, "to go to Next Step", 2);
-    displayString(350, 400, "START", 1);
+    displayString(350, 400, "START", 1, 'rg');
 }
 
 void myInit()
@@ -236,26 +248,23 @@ void myInit()
     glLoadIdentity();
     gluOrtho2D(0, width, 0, height);
     glMatrixMode(GL_MODELVIEW);
-
     glNewList(stackDisplayList, GL_COMPILE); // Display List
     glColor3f(0.6, 0.7, 1.0);
-    displayString(60, 20, "STACK", 1);
+    displayString(60, 20, "STACK", 1,'o');
     glBegin(GL_LINE_STRIP);
     glVertex2f(50, 450);
     glVertex2f(50, 50);
     glVertex2f(150, 50);
     glVertex2f(150, 450);
     glEnd();
-    displayString(320, 220, "Expression", 1);
+    displayString(320, 220, "Expression", 1, 'o');
     glBegin(GL_LINE_STRIP);
     glVertex2f(250, 300);
     glVertex2f(250, 250);
     glVertex2f(500, 250);
     glVertex2f(500, 300);
     glVertex2f(250, 300);
-
     glEnd();
-    displayString(75, 25, "Stack", 2);
     glEndList();
 }
 
@@ -271,7 +280,7 @@ void display()
     }
     else if (screen == 1)
     {
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1,'gb');
         glClearColor(0.0, 0.9, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
@@ -279,7 +288,7 @@ void display()
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glCallList(stackDisplayList);
         glutPostRedisplay();
@@ -287,7 +296,7 @@ void display()
     }
     else if (screen == 2)
     {
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'gb');
         glPushMatrix();
         glTranslatef(try, 0.0, 0.0);
         for (int i = 0; i < len; i++)
@@ -296,7 +305,7 @@ void display()
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glPopMatrix();
         glCallList(stackDisplayList);
@@ -306,7 +315,7 @@ void display()
     }
     else if (screen == 3)
     {
-        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
+        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1,'gb');
         glClearColor(0.1, 0.2, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
@@ -314,7 +323,7 @@ void display()
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glCallList(stackDisplayList);
         glutPostRedisplay();
@@ -322,7 +331,7 @@ void display()
     }
     else if (screen == 4)
     {
-        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
+        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'gb');
         glPushMatrix();
         glTranslatef(no, 0.0, 0.0);
         for (int i = 0; i < len; i++)
@@ -331,7 +340,7 @@ void display()
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1, 'rg');
         }
         glPopMatrix();
         glCallList(stackDisplayList);
