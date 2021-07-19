@@ -11,7 +11,7 @@ static int value = 0;
 char in[50] = "6+3-4/2*3", post[50];
 int len;
 int width = 800, height = 800;
-int view = 0;
+int screen = 5;
 const int stackDisplayList = -999;
 int stack = 1;
 float stackHeight = 0.0;
@@ -20,7 +20,7 @@ float no = 0;
 
 void drawCustomCube(double tx, double ty, double tz, double sx, double sy, double sz, double rz)
 {
-    glRotated(45, 0, 1, 0);
+    glRotated(30, 0, 1, 0);
     glRotated(rz, 0, 0, 1);
     glTranslated(tx, ty, tz);
     glScaled(sx, sy, sz);
@@ -135,14 +135,14 @@ void myInit()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    if (view == 0)
+    if (screen == 0)
     {
         myInit();
         displayWelcomeScreen();
         glutPostRedisplay();
         glutSwapBuffers();
     }
-    else if (view == 1)
+    else if (screen == 1)
     {
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
         glClearColor(0, 0, 0.3, 1);
@@ -158,7 +158,7 @@ void display()
         glutPostRedisplay();
         glutSwapBuffers();
     }
-    else if (view == 2)
+    else if (screen == 2)
     {
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
         glPushMatrix();
@@ -177,7 +177,7 @@ void display()
         glutSwapBuffers();
         try -= 0.5;
     }
-    else if (view == 3)
+    else if (screen == 3)
     {
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
         glClearColor(0, 0, 0.3, 1);
@@ -193,7 +193,7 @@ void display()
         glutPostRedisplay();
         glutSwapBuffers();
     }
-    else if (view == 4)
+    else if (screen == 4)
     {
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
         glPushMatrix();
@@ -212,10 +212,10 @@ void display()
         glutSwapBuffers();
         no -= 0.5;
     }
-    else if (view == 5)
+    else if (screen == 5)
     {
         float ambient[] = {1, 1, 1, 1};
-        float light_pos[] = {0.3, 0.3, 0.3, 1};
+        float light_pos[] = {-1, -1, -1.3, 1};
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
@@ -226,8 +226,30 @@ void display()
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.1, 0.2, 0.9, 1);
         glColor3f(1.0, 1.0, 1.0);
+        // To Display THANK YOU
+        // T
+        drawCustomCube(-0.87, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(-0.87, 0.64, 0, 0.3, 0.03, 0.03, 0);
+        // H
+        drawCustomCube(-0.49, 0.5, 0, 0.25, 0.03, 0.03, 0);
+        drawCustomCube(-0.6, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(-0.35, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // A
+        drawCustomCube(-0.055, 0.5, 0, 0.15, 0.03, 0.03, 0);
+        drawCustomCube(0.22, 0.45, 0, 0.03, 0.35, 0.03, 25);
+        drawCustomCube(-0.35, 0.395, 0, 0.03, 0.35, 0.03, -25);
+        // N
+        drawCustomCube(0.56, 0.19, 0, 0.03, 0.35, 0.03, 40);
+        drawCustomCube(0.20, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(0.425, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // K
+        drawCustomCube(0.79, -0.19, 0, 0.03, 0.20, 0.03, 45);
+        drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
+        drawCustomCube(0.6, 0.5, 0, 0.03, 0.3, 0.03, 0);
+        // Y
+        // drawCustomCube(0.79, -0.19, 0, 0.03, 0.20, 0.03, 45);
+        // drawCustomCube(0.09, 0.88, 0, 0.03, 0.20, 0.03, -45);
         drawCustomCube(0, 0, 0, 0.03, 0.3, 0.03, 0);
-        drawCustomCube(0, 0.15, 0, 0.3, 0.03, 0.03, 0);
         glFlush();
         glutPostRedisplay();
         glutSwapBuffers();
@@ -242,7 +264,7 @@ void mouseFunction(int button, int state, int x, int y) // Mouse Input Function
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        view++;
+        screen++;
     }
 }
 void keyboardFunction(unsigned char key, int x, int y) // Keybard Input Function
