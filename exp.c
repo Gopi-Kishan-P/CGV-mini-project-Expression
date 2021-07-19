@@ -13,13 +13,14 @@ float stackHeight = 0.0;
 float try = 0;
 float no = 0;
 
-void obj(double tx, double ty, double tz, double sx, double sy, double sz)
+void drawCustomCube(double tx, double ty, double tz, double sx, double sy, double sz, double rz)
 {
-	glRotated(45, 0, 1, 0); 
-	glTranslated(tx, ty, tz);
-	glScaled(sx, sy, sz);
-	glutSolidCube(1);
-	glLoadIdentity();
+    glRotated(45, 0, 1, 0);
+    glRotated(rz, 0, 0, 1);
+    glTranslated(tx, ty, tz);
+    glScaled(sx, sy, sz);
+    glutSolidCube(1);
+    glLoadIdentity();
 }
 
 void displayString(int x, int y, char *string, int font)
@@ -76,6 +77,7 @@ void myInit()
     glLoadIdentity();
     gluOrtho2D(0, width, 0, height);
     glMatrixMode(GL_MODELVIEW);
+
     glNewList(stackDisplayList, GL_COMPILE); // Display List
     glColor3f(0.6, 0.7, 1.0);
     glBegin(GL_LINE_STRIP);
@@ -84,6 +86,7 @@ void myInit()
     glVertex2f(150, 50);
     glVertex2f(150, 450);
     glEnd();
+    displayString(75, 25, "Stack", 2);
     glEndList();
 }
 
@@ -169,12 +172,20 @@ void display()
     }
     else if (view == 5)
     {
+        float ambient[] = {1, 1, 1, 1};
+        float light_pos[] = {0.3, 0.3, 0.3, 1};
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+        glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+        glEnable(GL_DEPTH_TEST);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.1, 0.2, 0.9, 1);
         glColor3f(1.0, 1.0, 1.0);
-        glutSolidCube(1);
+        drawCustomCube(0, 0, 0, 0.03, 0.3, 0.03, 0);
+        drawCustomCube(0, 0.15, 0, 0.3, 0.03, 0.03, 0);
         glFlush();
         glutPostRedisplay();
         glutSwapBuffers();
@@ -194,7 +205,6 @@ void mouseFunction(int button, int state, int x, int y) // Mouse Input Function
 }
 void keyboardFunction(unsigned char key, int x, int y) // Keybard Input Function
 {
-    
 }
 
 int main(int argc, char **argv)
