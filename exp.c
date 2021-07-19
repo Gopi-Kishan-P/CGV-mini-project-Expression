@@ -2,13 +2,16 @@
 #include <GL/glut.h>
 #include <string.h>
 #include <math.h>
+#include<ctype.h>
 
 static int menu_id;
+static int sub_menu;
+static int submenu2;
 static int submenu_id;
 static int window;
 static int value = 0;
 
-char in[50] = "6+3-4/2*3", post[50];
+char infix[50] = "6+3-4/2*3", postfix[50];
 int len;
 int width = 800, height = 800;
 int screen = 0;
@@ -40,47 +43,173 @@ void drawQuadricSurface(double tx, double ty, double tz, int i)
     glLoadIdentity();
 }
 
-void menu(int num){
+void menu(int num)
+{
 	if (num == 0)
 	{
-	glutDestroyWindow(window);
-	exit(0);
+        glutDestroyWindow(window);
+        exit(0);
 	}
-	else{
-	value = num;
+	else
+    {
+      switch (num)
+      {
+        case 2:
+        case 3: break;
+      }
 	}
 	glutPostRedisplay();
 }
+void demo_menu(int num)
+{
+    switch(num)
+    {
+        case 5:
+        case 6: 
+        case 7:
+        case 8: break;
+    }
+ }
+
+ void screen_menu(int num)
+{
+    switch(num)
+    {
+        case 9: 
+        case 10: 
+        case 11:
+        case 12: break;
+    }
+ }
 
 void createMenu(void)
-{
+{ 
 	submenu_id = glutCreateMenu(menu);
-	glutAddMenuEntry("Solve again", 2);
+	glutAddMenuEntry("Kishore A H ( 1AY18CS052 )", 2);
+    glutAddMenuEntry("Gopi Kishan P ( 1AY18CS040 )", 3);
+    submenu2 = glutCreateMenu(screen_menu);
+    glutAddMenuEntry("Welcome Screen",9);
+	glutAddMenuEntry("Infix to Postfix Expression Screen",10);
+	glutAddMenuEntry("Evaluation of Postfix Expression screen",11);
+	glutAddMenuEntry("End Screen",12);
+    sub_menu=glutCreateMenu(demo_menu);
+	glutAddMenuEntry("Press Left Mouse Button for Next screen",5);
+	glutAddMenuEntry("Press UP key for Zoom In in End Screen",6);
+	glutAddMenuEntry("Press DOWN key for Zoom Out in End Screen",7);
+	glutAddMenuEntry("Press Q to quit and N to start",8);
 	menu_id = glutCreateMenu(menu);
-	glutAddMenuEntry("Instructions", 1);
-	glutAddSubMenu("Exp", submenu_id);
+	glutAddSubMenu("Instructions", sub_menu);
+    glutAddSubMenu("Screens", submenu2);
+	glutAddSubMenu("About", submenu_id);
 	glutAddMenuEntry("Quit", 0);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-void display1(void)
+int F(char symbol) 
 {
-	glClear(GL_COLOR_BUFFER_BIT);
-	if (value == 1)
+    switch(symbol)
 	{
-		return; //glutPostRedisplay();
+        case '+':
+        case '-': return 2;
+        case '*':
+        case '/': return 4;
+        case '#': return -1;
+        default: return 8; 
+     }
+}
+
+int G(char symbol) 
+{
+	switch(symbol)
+	{
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 3;
+        case '#': return 0;
+        default: return 7; 
+        }	
+}
+
+void infix_postfix(char infix[], char postfix[])
+{
+	int top, j, i;
+	char s[30];
+	char symbol;
+	top = -1;
+	s[++top] = '#';
+	j = 0;
+	for(i=0;i<strlen(infix);i++)
+	{
+		symbol = infix[i];
+		while(F(s[top]) > G(symbol))
+			postfix[j++] = s[top--];
+		if(F(s[top]) != G(symbol))
+			s[++top] = symbol;
+		else
+			top--;
 	}
-	else if (value == 2)
+	while(s[top] != '#')
+		postfix[j++] = s[top--];
+	postfix[j] = '\0';
+}
+
+double compute(char symbol,double op1, double op2) 
+{
+	switch(symbol) 
 	{
-	
+		case '+': return op1 + op2;
+		case '-': return op1 - op2; 
+		case '*': return op1 * op2; 
+		case '/': return op1 / op2;
+		default: return 0;
 	} 
 }
 
+void ev_postfix() //function for evalulation of postfix exp
+{
+	double s[20], res, op1, op2; 
+	int top, i;
+	char postfix[20], symbol; 
 
-void displayString(int x, int y, char *string, int font)
+	printf("\nEnter the postfix expression:\n"); 
+	scanf("%s",postfix);
+	top=-1;
+	for(i=0; i<strlen(postfix); i++) 
+	{
+		symbol= postfix[i]; 
+		if(isdigit(symbol))
+			s[++top]= symbol-'0'; 
+		else
+		{
+			op2 = s[top--]; 
+			op1 = s[top--];
+			res =compute(symbol, op1, op2); 
+			s[++top]= res;
+		} 
+	}
+	res =s[top--];
+	printf("\nThe result is:%f\n",res); 
+}
+
+
+
+void displayString(int x, int y, char *string, int font, char color)
 {
     int len, i;
-    glColor3f(1.0, 1.0, 1.0);
+    switch (color)
+    {
+    case 'gb' : glColor3f(0.0,0.1,0.1);
+                break;
+    case 'rg' : glColor3f(0.1,0.1,0.0);
+                break;
+    case 'o' : glColor3f(0.1,0.0,0.1);
+                break;
+    
+    default:
+        break;
+    }
+    glColor3f(0.1, 0.2, 1.0);
     glRasterPos2f(x, y);
     len = (int)strlen(string);
     for (i = 0; i < len; i++)
@@ -101,27 +230,27 @@ void displayWelcomeScreen()
     char e1[50] = "Expression :  ";
     for (int i = 0; i < len; i++)
     {
-        char ch = in[i];
+        char ch = infix[i];
         char temp[3];
         temp[0] = ch;
         temp[1] = ' ';
         temp[2] = '\0';
         strcat(e1, temp);
     }
-    glClearColor(0.1, 0.2, 0.9, 1);
-    displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1);
-    displayString(360, 670, "AND", 1);
-    displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1);
-    displayString(500, 70, "Mini Project By : ", 2);
-    displayString(650, 45, "Gopi Kishan P", 2);
-    displayString(650, 20, "Kishore AH", 2);
-    displayString(10, 520, e1, 2);
-    displayString(10, 100, "Instructions : ", 2);
-    displayString(40, 70, "Click 'Left Mouse' Button", 2);
-    displayString(65, 50, "or", 2);
-    displayString(40, 30, "Press 'N' Key", 2);
-    displayString(45, 10, "to go to Next Step", 2);
-    displayString(350, 400, "START", 1);
+    glClearColor(0.8, 1.0, 0.6, 1);
+    displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1,'rg');
+    displayString(360, 670, "AND", 1, 'rg');
+    displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1,'rg');
+    displayString(500, 70, "Mini Project By : ", 2,'rg');
+    displayString(500, 45, "Gopi Kishan P ( 1AY18CS040 )", 2, 'rg');
+    displayString(500, 20, "Kishore A H ( 1AY18CS052 )", 2, 'rg');
+    displayString(10, 520, e1, 2, 'rg');
+    displayString(200, 300, "**** For Instructions, Click 'Right Mouse' Button ****",2, 'gb');
+    // displayString(60, 120, "", 2);
+    // displayString(65, 50, "or", 2);
+    // displayString(40, 30, "Press 'N' Key", 2);
+    // displayString(45, 10, "to go to Next Step", 2);
+    displayString(350, 400, "START", 1, 'rg');
 }
 
 void myInit()
@@ -131,16 +260,23 @@ void myInit()
     glLoadIdentity();
     gluOrtho2D(0, width, 0, height);
     glMatrixMode(GL_MODELVIEW);
-
     glNewList(stackDisplayList, GL_COMPILE); // Display List
     glColor3f(0.6, 0.7, 1.0);
+    displayString(60, 20, "STACK", 1,'o');
     glBegin(GL_LINE_STRIP);
     glVertex2f(50, 450);
     glVertex2f(50, 50);
     glVertex2f(150, 50);
     glVertex2f(150, 450);
     glEnd();
-    displayString(75, 25, "Stack", 2);
+    displayString(320, 220, "Expression", 1, 'o');
+    glBegin(GL_LINE_STRIP);
+    glVertex2f(250, 300);
+    glVertex2f(250, 250);
+    glVertex2f(500, 250);
+    glVertex2f(500, 300);
+    glVertex2f(250, 300);
+    glEnd();
     glEndList();
 }
 
@@ -156,15 +292,15 @@ void display()
     }
     else if (screen == 1)
     {
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
-        glClearColor(0, 0, 0.3, 1);
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1,'gb');
+        glClearColor(0.0, 0.9, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
-            char ch = in[i];
+            char ch = infix[i];
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glCallList(stackDisplayList);
         glutPostRedisplay();
@@ -172,16 +308,16 @@ void display()
     }
     else if (screen == 2)
     {
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1);
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'gb');
         glPushMatrix();
         glTranslatef(try, 0.0, 0.0);
         for (int i = 0; i < len; i++)
         {
-            char ch = in[i];
+            char ch = infix[i];
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glPopMatrix();
         glCallList(stackDisplayList);
@@ -191,15 +327,15 @@ void display()
     }
     else if (screen == 3)
     {
-        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
-        glClearColor(0, 0, 0.3, 1);
+        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1,'gb');
+        glClearColor(0.1, 0.2, 0.5, 1);
         for (int i = 0; i < len; i++)
         {
-            char ch = in[i];
+            char ch = infix[i];
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1,'rg');
         }
         glCallList(stackDisplayList);
         glutPostRedisplay();
@@ -207,16 +343,16 @@ void display()
     }
     else if (screen == 4)
     {
-        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1);
+        displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'gb');
         glPushMatrix();
         glTranslatef(no, 0.0, 0.0);
         for (int i = 0; i < len; i++)
         {
-            char ch = in[i];
+            char ch = infix[i];
             char temp[2];
             temp[0] = ch;
             temp[1] = '\0';
-            displayString(180 + i * 30, 650, temp, 1);
+            displayString(180 + i * 30, 650, temp, 1, 'rg');
         }
         glPopMatrix();
         glCallList(stackDisplayList);
@@ -295,16 +431,31 @@ void mouseFunction(int button, int state, int x, int y) // Mouse Input Function
 }
 void keyboardFunction(unsigned char key, int x, int y) // Keybard Input Function
 {
+    if (key == 'Q' || key == 'q')
+        exit(0);
+}
+
+void myReshape(int w, int h)
+{
+	glViewport(0,0,w,h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if(w<=h)
+		glOrtho(-2.0,2.0,-2.0*(GLfloat)h/(GLfloat)w, 2.0*(GLfloat)h/(GLfloat)w,-10.0,10.0);
+	else
+		glOrtho(-2.0*(GLfloat)w/(GLfloat)h, 2.0*(GLfloat)w/(GLfloat)h, -2.0,2.0,-10.0,10.0);
+	glMatrixMode(GL_MODELVIEW);
 }
 
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    len = strlen(in);
+    len = strlen(infix);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(width, height);
     glutCreateWindow("Infix and Postfix Expression");
     glutDisplayFunc(display);
+    glutReshapeFunc(myReshape);
     glutMouseFunc(mouseFunction);
     createMenu();
     glutKeyboardFunc(keyboardFunction);
