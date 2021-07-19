@@ -217,7 +217,7 @@ void displayString(int x, int y, char *string, int font, char color)
         glColor3f(0.0, 1.0, 0.0);
         break;
     case 'b':
-        glColor3f(0.2, 0.2, 1.0);
+        glColor3f(0.7, 0.8, 1.0);
         break;
     case 'p':
         glColor3f(1.0, 0.0, 1.0);
