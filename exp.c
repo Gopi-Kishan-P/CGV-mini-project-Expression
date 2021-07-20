@@ -54,6 +54,7 @@ struct Point p7 = {250 + 7 * 30, 650};
 struct Point p8 = {250 + 8 * 30, 650};
 struct Point p9 = {340, 500};
 struct Point p10 = {340, 500};
+struct Point p11 = {340, 500};
 
 int dpSix = 1;
 int dpEquals = 0;
@@ -524,6 +525,8 @@ int p9x = 0;
 int p9y = 0;
 int p10x = 0;
 int p10y = 0;
+int p11x = 0;
+int p11y = 0;
 void animatePosttoRes()
 {
 
@@ -737,13 +740,82 @@ void animatePosttoRes()
         return;
     }
 
-    dpMinus = 0;
     dpThree2 = 0;
     dpTwo = 0;
-    dpNine = 0;
     dpStar = 0;
+    dpSixR = 1;
+    if (!p11x && p11.x >= 91)
+    {
+        if (p11.x == 91)
+            p11x = 1;
+        p11.x--;
+        return;
+    }
+    if (!p11y && p11.y >= 150)
+    {
+        if (p11.y == 150)
+            p11y = 1;
+        p11.y--;
+        return;
+    }
+    if (p8.y > 500)
+    {
+        p8.y--;
+        return;
+    }
+    if (p8.x > 250)
+    {
+        p8.x--;
+        return;
+    }
+    if (p11.y < 500)
+    {
+        p11.y++;
+        return;
+    }
+    if (p11.x < 280)
+    {
+        p11.x++;
+        return;
+    }
+    // if (p11.y < 500)
+    // {
+    //     p11.y++;
+    //     return;
+    // }
+    // if (p11.x <= 214)
+    // {
+    //     p11.x++;
+    //     return;
+    // }
+    // if (p9.y < 500)
+    // {
+    //     p9.y++;
+    //     return;
+    // }
+    // if (p9.x < 280)
+    // {
+    //     p9.x++;
+    //     return;
+    // }
+    if (p9.y < 500)
+    {
+        p9.y++;
+        return;
+    }
+    if (p9.x <= 214)
+    {
+        if (p9.x >= 213)
+        {
+            dpEquals = 1;
+        }
+        p9.x++;
+        return;
+    }
     dpThreeR = 1;
-
+    dpSixR = 0;
+    dpMinus = 0;
+    dpNine = 0;
     postfixAnimateComplete = 1;
 }
 
@@ -803,7 +875,7 @@ void display()
         glDisable(GL_LIGHT0);
         glDisable(GL_DEPTH_TEST);
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'o');
-        displayString(50, 650, "Infix Expression : ", 1, 'o');
+        displayString(40, 650, "Postfix Expression : ", 1, 'o');
         glClearColor(0.2, 0.1, 0, 0);
         for (int i = 0; i < postfixLen; i++)
         {
@@ -851,6 +923,8 @@ void display()
             displayString(p10.x, p10.y, "2", 1, 'o');
         if (dpThreeR)
             displayString(310, p10.y, "3", 1, 'o');
+        if (dpSixR)
+            displayString(p11.x, p11.y, "6", 1, 'o');
         glCallList(stackDisplayList);
         glutPostRedisplay();
         glutSwapBuffers();
