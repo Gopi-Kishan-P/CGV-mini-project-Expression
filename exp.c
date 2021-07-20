@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include<unistd.h>
 
 static int menu_id;
 static int sub_menu;
@@ -24,6 +25,8 @@ char stack[50];
 int stkTop = -1;
 char temp[2];
 int infixAnimateComplete = 0;
+int postfixAnimateComplete = 0;
+float result;
 
 struct Point
 {
@@ -39,6 +42,31 @@ struct Point i5 = {250 + 5 * 30, 650};
 struct Point i6 = {250 + 6 * 30, 650};
 struct Point i7 = {250 + 7 * 30, 650};
 struct Point i8 = {250 + 8 * 30, 650};
+
+struct Point p0 = {250, 650};
+struct Point p1 = {250 + 1 * 30, 650};
+struct Point p2 = {250 + 2 * 30, 650};
+struct Point p3 = {250 + 3 * 30, 650};
+struct Point p4 = {250 + 4 * 30, 650};
+struct Point p5 = {250 + 5 * 30, 650};
+struct Point p6 = {250 + 6 * 30, 650};
+struct Point p7 = {250 + 7 * 30, 650};
+struct Point p8 = {250 + 8 * 30, 650};
+struct Point p9 = {340, 500};
+
+int dpSix = 1;
+int dpEquals = 0;
+int dpPlus = 1;
+int dpThree1 = 1;
+int dpNine = 0;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
+// int dpEquals = 1;
 
 void drawCustomCube(double tx, double ty, double tz, double sx, double sy, double sz, double rz)
 {
@@ -130,40 +158,6 @@ void createMenu(void)
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-int F(char symbol)
-{
-    switch (symbol)
-    {
-    case '+':
-    case '-':
-        return 2;
-    case '*':
-    case '/':
-        return 4;
-    case '#':
-        return -1;
-    default:
-        return 8;
-    }
-}
-
-int G(char symbol)
-{
-    switch (symbol)
-    {
-    case '+':
-    case '-':
-        return 1;
-    case '*':
-    case '/':
-        return 3;
-    case '#':
-        return 0;
-    default:
-        return 7;
-    }
-}
-
 void moveToPostfix(char ch)
 {
     postfixLen = strlen(postfix);
@@ -235,16 +229,17 @@ double compute(char symbol, double op1, double op2)
     }
 }
 
-void evaluate_postfix() //function for evalulation of postfix exp
+void postfix_to_result() //function for evalulation of postfix exp
 {
     double s[20], res, op1, op2;
-    int top, i;
-    char postfix[20], symbol;
+    int top, try = 50;
+    char symbol;
 
     top = -1;
-    for (i = 0; i < strlen(postfix); i++)
+    for (int pp = 0; pp < postfixLen; pp++)
     {
-        symbol = postfix[i];
+        symbol = postfix[pp];
+
         if (isdigit(symbol))
             s[++top] = symbol - '0';
         else
@@ -256,7 +251,7 @@ void evaluate_postfix() //function for evalulation of postfix exp
         }
     }
     res = s[top--];
-    printf("\nThe result is:%f\n", res);
+    result = res;
 }
 
 void displayString(int x, int y, char *string, int font, char color)
@@ -295,18 +290,27 @@ void displayString(int x, int y, char *string, int font, char color)
     }
 }
 
-void displayWelcomeScreen()
+void getSpacedExpression(char *src, char *exp, int expLen)
 {
-    char e1[50] = "Expression :  ";
-    for (int i = 0; i < infixLen; i++)
+    for (int i = 0; i < expLen; i++)
     {
-        char ch = infix[i];
         char temp[3];
-        temp[0] = ch;
+        temp[0] = exp[i];
         temp[1] = ' ';
         temp[2] = '\0';
-        strcat(e1, temp);
+        strcat(src, temp);
     }
+}
+void displayWelcomeScreen()
+{
+    char in1[50] = "Infix Expression :  ";
+    char post1[50] = "Postfix Expression :  ";
+    char res1[20] = "Result = ";
+    char resStr[5];
+    gcvt(result, 3, resStr);
+    strcat(res1, resStr);
+    getSpacedExpression(in1, infix, infixLen);
+    getSpacedExpression(post1, postfix, infixLen);
     glClearColor(0.0, 0.3, 0.0, 1);
     displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
     displayString(360, 670, "AND", 1, 'g');
@@ -314,9 +318,11 @@ void displayWelcomeScreen()
     displayString(500, 70, "Mini Project By : ", 2, 'g');
     displayString(500, 45, "Gopi Kishan P ( 1AY18CS040 )", 2, 'g');
     displayString(500, 20, "Kishore A H ( 1AY18CS052 )", 2, 'g');
-    displayString(10, 520, e1, 2, 'g');
-    displayString(200, 300, "**** For Instructions, Click 'Right Mouse' Button ****", 2, 'g');
-    displayString(350, 400, "START", 1, 'g');
+    displayString(10, 520, in1, 2, 'g');
+    displayString(10, 490, post1, 2, 'g');
+    displayString(10, 460, res1, 2, 'g');
+    displayString(200, 250, "**** For Instructions, Click 'Right Mouse' Button ****", 2, 'g');
+    displayString(275, 350, "START VISUALIZATION", 1, 'g');
 }
 
 void myInit()
@@ -494,9 +500,142 @@ void animateIntoPost()
     }
     if (i3.x <= 490)
     {
-        if(i3.x == 490)
+        if (i3.x == 490)
             infixAnimateComplete = 1;
         i3.x++;
+        return;
+    }
+}
+
+int p0x = 0;
+int p0y = 0;
+int p1x = 0;
+int p1y = 0;
+int p3x = 0;
+int p3y = 0;
+int p4x = 0;
+int p4y = 0;
+int p9x = 0;
+int p9y = 0;
+void animatePosttoRes()
+{
+
+    if (!p0x && p0.x >= 91)
+    {
+        if (p0.x == 91)
+            p0x = 1;
+        p0.x--;
+        return;
+    }
+    if (!p0y && p0.y >= 85)
+    {
+        if (p0.y == 85)
+            p0y = 1;
+        p0.y--;
+        return;
+    }
+    if (!p1x && p1.x >= 91)
+    {
+        if (p1.x == 91)
+            p1x = 1;
+        p1.x--;
+        return;
+    }
+    if (!p1y && p1.y >= 150)
+    {
+        if (p1.y == 150)
+            p1y = 1;
+        p1.y--;
+        return;
+    }
+    if (p2.y > 500)
+    {
+        p2.y--;
+        return;
+    }
+    if (p2.x > 250)
+    {
+        p2.x--;
+        return;
+    }
+    if (p1.y < 500)
+    {
+        p1.y++;
+        return;
+    }
+    if (p1.x < 280)
+    {
+        p1.x++;
+        return;
+    }
+    if (p0.y < 500)
+    {
+        p0.y++;
+        return;
+    }
+    if (p0.x <= 220)
+    {
+        if (p0.x == 219){
+            dpEquals = 1;
+        }
+        p0.x++;
+        return;
+    }
+    dpNine = 1;
+    dpSix = 0;
+    dpPlus = 0;
+    dpThree1 = 0;
+    dpEquals = 0;
+    if (!p9x && p9.x >= 91)
+    {
+        if (p9.x == 91)
+            p9x = 1;
+        p9.x--;
+        return;
+    }
+    if (!p9y && p0.y >= 85)
+    {
+        if (p9.y == 85)
+            p9y = 1;
+        p9.y--;
+        return;
+    }
+    if (!p3x && p3.x >= 91)
+    {
+        if (p3.x == 91)
+            p3x = 1;
+        p3.x--;
+        return;
+    }
+    if (!p3y && p3.y >= 150)
+    {
+        if (p3.y == 150)
+            p3y = 1;
+        p3.y--;
+        return;
+    }
+    if (!p4x && p4.x >= 91)
+    {
+        if (p4.x == 91)
+            p4x = 1;
+        p4.x--;
+        return;
+    }
+    if (!p4y && p4.y >= 215)
+    {
+        if (p4.y == 215)
+            p4y = 1;
+        p4.y--;
+        return;
+    }
+    if (p5.y > 500)
+    {
+        p5.y--;
+        return;
+    }
+    if (p5.x > 250)
+    {
+        p5.x--;
         return;
     }
 }
@@ -534,7 +673,7 @@ void display()
     else if (screen == 2)
     {
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'b');
-        if(infixAnimateComplete)
+        if (infixAnimateComplete)
             displayString(35, 500, "Postfix Expression : ", 1, 'b');
         displayString(i0.x, i0.y, singleCharString(infix, 0), 1, 'b');
         displayString(i1.x, i1.y, singleCharString(infix, 1), 1, 'b');
@@ -573,21 +712,30 @@ void display()
     else if (screen == 4)
     {
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'o');
-        glPushMatrix();
-        glTranslatef(no, 0.0, 0.0);
-        for (int i = 0; i < postfixLen; i++)
-        {
-            char ch = postfix[i];
-            char temp[2];
-            temp[0] = ch;
-            temp[1] = '\0';
-            displayString(250 + i * 30, 650, temp, 1, 'o');
+        if (postfixAnimateComplete)
+            displayString(35, 500, "Result = ", 1, 'b');
+        if (dpSix)
+            displayString(p0.x, p0.y, singleCharString(postfix, 0), 1, 'o');
+        if (dpThree1)
+            displayString(p1.x, p1.y, singleCharString(postfix, 1), 1, 'o');
+        if (dpPlus)
+            displayString(p2.x, p2.y, singleCharString(postfix, 2), 1, 'o');
+        displayString(p3.x, p3.y, singleCharString(postfix, 3), 1, 'o');
+        displayString(p4.x, p4.y, singleCharString(postfix, 4), 1, 'o');
+        displayString(p5.x, p5.y, singleCharString(postfix, 5), 1, 'o');
+        displayString(p6.x, p6.y, singleCharString(postfix, 6), 1, 'o');
+        displayString(p7.x, p7.y, singleCharString(postfix, 7), 1, 'o');
+        displayString(p8.x, p8.y, singleCharString(postfix, 8), 1, 'o');
+        if (dpEquals){
+            displayString(310, 500, "=", 1, 'o');
+            sleep(1);
         }
-        glPopMatrix();
+        if (dpNine)
+            displayString(p9.x, p9.y, "9", 1, 'o');
         glCallList(stackDisplayList);
         glutPostRedisplay();
         glutSwapBuffers();
-        no -= 0.5;
+        animatePosttoRes();
     }
     else if (screen == 5)
     {
@@ -683,6 +831,8 @@ int main(int argc, char **argv)
     printf("Infix Expression : %s\n", infix);
     infix_to_postfix();
     printf("Postfix Expression : %s\n", postfix);
+    postfix_to_result();
+    printf("Result = %.2f\n", result);
     glutInit(&argc, argv);
     infixLen = strlen(infix);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
