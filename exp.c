@@ -308,18 +308,7 @@ void getSpacedExpression(char *src, char *exp, int expLen)
         temp[2] = '\0';
         strcat(src, temp);
     }
-}
-void displayWelcomeScreen()
-{
-    char in1[50] = "Infix Expression :  ";
-    char post1[50] = "Postfix Expression :  ";
-    char res1[20] = "Result = ";
-    char resStr[5];
-    gcvt(result, 3, resStr);
-    strcat(res1, resStr);
-    getSpacedExpression(in1, infix, infixLen);
-    getSpacedExpression(post1, postfix, infixLen);
-    glClearColor(0.0, 0.3, 0.0, 1);
+    glClearColor(0.0, 0.3, 0.1, 1);
     displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
     displayString(360, 670, "AND", 1, 'g');
     displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1, 'g');
@@ -342,7 +331,7 @@ void myInit()
     glMatrixMode(GL_MODELVIEW);
     glNewList(stackDisplayList, GL_COMPILE); // Display List
     glColor3f(0.6, 0.7, 1.0);
-    displayString(60, 20, "STACK", 1, 'p');
+    displayString(60, 20, "STACK", 1, 'g');
     glBegin(GL_LINE_STRIP);
     glVertex2f(50, 350);
     glVertex2f(50, 50);
@@ -771,12 +760,12 @@ void display()
         glDisable(GL_LIGHTING);
         glDisable(GL_LIGHT0);
         glDisable(GL_DEPTH_TEST);
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'b');
-        displayString(50, 650, "Infix Expression : ", 1, 'b');
-        glClearColor(0.0, 0.0, 0.2, 1);
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
+        displayString(50, 650, "Infix Expression : ", 1, 'g');
+        glClearColor(0.0, 0.1, 0.2, 1);
         for (int i = 0; i < infixLen; i++)
         {
-            displayString(250 + i * 30, 650, singleCharString(infix, i), 1, 'b');
+            displayString(250 + i * 30, 650, singleCharString(infix, i), 1, 'g');
         }
         glCallList(stackDisplayList);
         glutPostRedisplay();
@@ -784,9 +773,9 @@ void display()
     }
     else if (screen == 2)
     {
-        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'b');
-        if (infixAnimateComplete)
-            displayString(35, 500, "Postfix Expression : ", 1, 'b');
+        displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
+        if(infixAnimateComplete)
+            displayString(35, 500, "Postfix Expression : ", 1, 'g');
         displayString(i0.x, i0.y, singleCharString(infix, 0), 1, 'b');
         displayString(i1.x, i1.y, singleCharString(infix, 1), 1, 'b');
         displayString(i2.x, i2.y, singleCharString(infix, 2), 1, 'b');
