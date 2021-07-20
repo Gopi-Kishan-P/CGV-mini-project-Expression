@@ -69,12 +69,6 @@ int dpSixR = 0;
 int dpStar = 1;
 int dpMinus = 1;
 int dpThreeR = 0;
-// int dpEquals = 1;
-// int dpEquals = 1;
-// int dpEquals = 1;
-// int dpEquals = 1;
-// int dpEquals = 1;
-// int dpEquals = 1;
 
 void drawCustomCube(double tx, double ty, double tz, double sx, double sy, double sz, double rz)
 {
@@ -277,7 +271,7 @@ void displayString(int x, int y, char *string, int font, char color)
         glColor3f(1.0, 0.0, 1.0);
         break;
     case 'o':
-        glColor3f(1.0, 0.5, 0.0);
+        glColor3f(1.0, 1.0, 0.0);
         break;
 
     default:
@@ -308,7 +302,19 @@ void getSpacedExpression(char *src, char *exp, int expLen)
         temp[2] = '\0';
         strcat(src, temp);
     }
-    glClearColor(0.0, 0.3, 0.1, 1);
+}
+
+void displayWelcomeScreen()
+{
+    char in1[50] = "Infix Expression :  ";
+    char post1[50] = "Postfix Expression :  ";
+    char res1[20] = "Result = ";
+    char resStr[5];
+    gcvt(result, 3, resStr);
+    strcat(res1, resStr);
+    getSpacedExpression(in1, infix, infixLen);
+    getSpacedExpression(post1, postfix, infixLen);
+    glClearColor(0.0, 0.3, 0.0, 1);
     displayString(220, 700, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
     displayString(360, 670, "AND", 1, 'g');
     displayString(180, 640, "EVALUATION OF POSTFIX EXPRESSION", 1, 'g');
@@ -330,8 +336,8 @@ void myInit()
     gluOrtho2D(0, width, 0, height);
     glMatrixMode(GL_MODELVIEW);
     glNewList(stackDisplayList, GL_COMPILE); // Display List
-    glColor3f(0.6, 0.7, 1.0);
-    displayString(60, 20, "STACK", 1, 'g');
+    glColor3f(1.0, 0.0, 1.0);
+    displayString(60, 20, "STACK", 1, 'p');
     glBegin(GL_LINE_STRIP);
     glVertex2f(50, 350);
     glVertex2f(50, 50);
@@ -776,15 +782,15 @@ void display()
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
         if(infixAnimateComplete)
             displayString(35, 500, "Postfix Expression : ", 1, 'g');
-        displayString(i0.x, i0.y, singleCharString(infix, 0), 1, 'b');
-        displayString(i1.x, i1.y, singleCharString(infix, 1), 1, 'b');
-        displayString(i2.x, i2.y, singleCharString(infix, 2), 1, 'b');
-        displayString(i3.x, i3.y, singleCharString(infix, 3), 1, 'b');
-        displayString(i4.x, i4.y, singleCharString(infix, 4), 1, 'b');
-        displayString(i5.x, i5.y, singleCharString(infix, 5), 1, 'b');
-        displayString(i6.x, i6.y, singleCharString(infix, 6), 1, 'b');
-        displayString(i7.x, i7.y, singleCharString(infix, 7), 1, 'b');
-        displayString(i8.x, i8.y, singleCharString(infix, 8), 1, 'b');
+        displayString(i0.x, i0.y, singleCharString(infix, 0), 1, 'g');
+        displayString(i1.x, i1.y, singleCharString(infix, 1), 1, 'g');
+        displayString(i2.x, i2.y, singleCharString(infix, 2), 1, 'g');
+        displayString(i3.x, i3.y, singleCharString(infix, 3), 1, 'g');
+        displayString(i4.x, i4.y, singleCharString(infix, 4), 1, 'g');
+        displayString(i5.x, i5.y, singleCharString(infix, 5), 1, 'g');
+        displayString(i6.x, i6.y, singleCharString(infix, 6), 1, 'g');
+        displayString(i7.x, i7.y, singleCharString(infix, 7), 1, 'g');
+        displayString(i8.x, i8.y, singleCharString(infix, 8), 1, 'g');
         glCallList(stackDisplayList);
         glutPostRedisplay();
         glutSwapBuffers();
