@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include<unistd.h>
+#include <unistd.h>
 
 static int menu_id;
 static int sub_menu;
@@ -53,14 +53,22 @@ struct Point p6 = {250 + 6 * 30, 650};
 struct Point p7 = {250 + 7 * 30, 650};
 struct Point p8 = {250 + 8 * 30, 650};
 struct Point p9 = {340, 500};
+struct Point p10 = {340, 500};
 
 int dpSix = 1;
 int dpEquals = 0;
 int dpPlus = 1;
 int dpThree1 = 1;
+int dpThree2 = 1;
 int dpNine = 0;
-// int dpEquals = 1;
-// int dpEquals = 1;
+int dpFour = 1;
+int dpPTwo = 1;
+int dpTwo = 0;
+int dpDiv = 1;
+int dpSixR = 0;
+int dpStar = 1;
+int dpMinus = 1;
+int dpThreeR = 0;
 // int dpEquals = 1;
 // int dpEquals = 1;
 // int dpEquals = 1;
@@ -515,8 +523,12 @@ int p3x = 0;
 int p3y = 0;
 int p4x = 0;
 int p4y = 0;
+int p6x = 0;
+int p6y = 0;
 int p9x = 0;
 int p9y = 0;
+int p10x = 0;
+int p10y = 0;
 void animatePosttoRes()
 {
 
@@ -575,7 +587,8 @@ void animatePosttoRes()
     }
     if (p0.x <= 220)
     {
-        if (p0.x == 219){
+        if (p0.x >= 219)
+        {
             dpEquals = 1;
         }
         p0.x++;
@@ -638,6 +651,105 @@ void animatePosttoRes()
         p5.x--;
         return;
     }
+    if (p4.y < 500)
+    {
+        p4.y++;
+        return;
+    }
+    if (p4.x < 280)
+    {
+        p4.x++;
+        return;
+    }
+    if (p3.y < 500)
+    {
+        p3.y++;
+        return;
+    }
+    if (p3.x <= 214)
+    {
+        if (p3.x >= 213)
+        {
+            dpEquals = 1;
+        }
+        p3.x++;
+        return;
+    }
+    dpPTwo = 0;
+    dpTwo = 1;
+    dpFour = 0;
+    dpDiv = 0;
+    if (!p10x && p10.x >= 91)
+    {
+        if (p10.x == 91)
+            p10x = 1;
+        p10.x--;
+        return;
+    }
+    if (!p10y && p10.y >= 150)
+    {
+        if (p10.y == 150)
+            p10y = 1;
+        p10.y--;
+        return;
+    }
+    if (!p6x && p6.x >= 91)
+    {
+        if (p6.x == 91)
+            p6x = 1;
+        p6.x--;
+        return;
+    }
+    if (!p6y && p6.y >= 215)
+    {
+        if (p6.y == 215)
+            p6y = 1;
+        p6.y--;
+        return;
+    }
+    if (p7.y > 500)
+    {
+        p7.y--;
+        return;
+    }
+    if (p7.x > 250)
+    {
+        p7.x--;
+        return;
+    }
+    if (p6.y < 500)
+    {
+        p6.y++;
+        return;
+    }
+    if (p6.x < 280)
+    {
+        p6.x++;
+        return;
+    }
+    if (p10.y < 500)
+    {
+        p10.y++;
+        return;
+    }
+    if (p10.x <= 220)
+    {
+        if (p10.x >= 219)
+        {
+            dpEquals = 1;
+        }
+        p10.x++;
+        return;
+    }
+
+    dpMinus = 0;
+    dpThree2 = 0;
+    dpTwo = 0;
+    dpNine = 0;
+    dpStar = 0;
+    dpThreeR = 1;
+
+    postfixAnimateComplete = 1;
 }
 
 void display()
@@ -696,6 +808,7 @@ void display()
         glDisable(GL_LIGHT0);
         glDisable(GL_DEPTH_TEST);
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'o');
+        displayString(50, 650, "Infix Expression : ", 1, 'o');
         glClearColor(0.2, 0.1, 0, 0);
         for (int i = 0; i < postfixLen; i++)
         {
@@ -713,25 +826,36 @@ void display()
     {
         displayString(150, 750, "EVALUATION OF POSTFIX EXPRESSION", 1, 'o');
         if (postfixAnimateComplete)
-            displayString(35, 500, "Result = ", 1, 'b');
+            displayString(200, 500, "Result   = ", 1, 'o');
         if (dpSix)
             displayString(p0.x, p0.y, singleCharString(postfix, 0), 1, 'o');
         if (dpThree1)
             displayString(p1.x, p1.y, singleCharString(postfix, 1), 1, 'o');
         if (dpPlus)
             displayString(p2.x, p2.y, singleCharString(postfix, 2), 1, 'o');
-        displayString(p3.x, p3.y, singleCharString(postfix, 3), 1, 'o');
-        displayString(p4.x, p4.y, singleCharString(postfix, 4), 1, 'o');
-        displayString(p5.x, p5.y, singleCharString(postfix, 5), 1, 'o');
-        displayString(p6.x, p6.y, singleCharString(postfix, 6), 1, 'o');
-        displayString(p7.x, p7.y, singleCharString(postfix, 7), 1, 'o');
-        displayString(p8.x, p8.y, singleCharString(postfix, 8), 1, 'o');
-        if (dpEquals){
+        if (dpFour)
+            displayString(p3.x, p3.y, singleCharString(postfix, 3), 1, 'o');
+        if (dpPTwo)
+            displayString(p4.x, p4.y, singleCharString(postfix, 4), 1, 'o');
+        if (dpDiv)
+            displayString(p5.x, p5.y, singleCharString(postfix, 5), 1, 'o');
+        if (dpThree2)
+            displayString(p6.x, p6.y, singleCharString(postfix, 6), 1, 'o');
+        if (dpStar)
+            displayString(p7.x, p7.y, singleCharString(postfix, 7), 1, 'o');
+        if (dpMinus)
+            displayString(p8.x, p8.y, singleCharString(postfix, 8), 1, 'o');
+        if (dpEquals)
+        {
             displayString(310, 500, "=", 1, 'o');
             sleep(1);
         }
         if (dpNine)
             displayString(p9.x, p9.y, "9", 1, 'o');
+        if (dpTwo)
+            displayString(p10.x, p10.y, "2", 1, 'o');
+        if (dpThreeR)
+            displayString(310, p10.y, "3", 1, 'o');
         glCallList(stackDisplayList);
         glutPostRedisplay();
         glutSwapBuffers();
