@@ -12,6 +12,8 @@ static int submenu_id;
 static int window;
 static int value = 0;
 
+int play = 1;
+
 char infix[50] = "6+3-4/2*3", postfix[50];
 int infixLen;
 int postfixLen;
@@ -150,6 +152,7 @@ void createMenu(void)
     glutAddMenuEntry("End Screen", 12);
     sub_menu = glutCreateMenu(demo_menu);
     glutAddMenuEntry("Press 'Left Mouse Button' to go to Next Screen", 5);
+    glutAddMenuEntry("Press 'P' to to Pause or Play Animation", 20);
     glutAddMenuEntry("Press 'N' to go to Next Screen", 6);
     glutAddMenuEntry("Press 'Space Bar' to go to Next Screen", 7);
     glutAddMenuEntry("Press Q to quit and N to start", 8);
@@ -363,6 +366,29 @@ int i5x = 0;
 int i5y = 0;
 int i7x = 0;
 int i7y = 0;
+int l1 = 0;
+int l2 = 0;
+int l3 = 0;
+
+void displayStackLineIn()
+{
+    if (i1.y <= 100 || i3.y <= 100) // Line 1
+    {
+        glColor3f(1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(50, 120);
+        glVertex2f(150, 120);
+        glEnd();
+    }
+    if (i5.y <= 170 || i7.y <= 170) // Line 2
+    {
+        glColor3f(1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(50, 200);
+        glVertex2f(150, 200);
+        glEnd();
+    }
+}
 
 void animateIntoPost()
 {
@@ -385,6 +411,8 @@ void animateIntoPost()
         i1.y--;
         return;
     }
+    // if(l1==0)
+    //     displayStackLine(1, 120);
     if (i2.y > 500)
     {
         i2.y--;
@@ -404,6 +432,7 @@ void animateIntoPost()
     }
     if (i1.y < 500)
     {
+        // if(l1==0) l1++;
         i1.y++;
         return;
     }
@@ -419,6 +448,8 @@ void animateIntoPost()
         i3.y--;
         return;
     }
+    // if(l1==1)
+    //     displayStackLine(1, 120);
     if (i4.y > 500)
     {
         i4.y--;
@@ -499,6 +530,8 @@ void animateIntoPost()
     }
     if (i3.y < 500)
     {
+        if (l1 == 1)
+            l1++;
         i3.y++;
         return;
     }
@@ -527,9 +560,37 @@ int p10x = 0;
 int p10y = 0;
 int p11x = 0;
 int p11y = 0;
+
+void displayStackLinePost()
+{
+    if (p0.y <= 100 || p9.y <= 100) // Line 1
+    {
+        glColor3f(1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(50, 120);
+        glVertex2f(150, 120);
+        glEnd();
+    }
+    if (p1.y <= 170 || p3.y <= 170 || p10.y <= 170 || p11.y <= 170) // Line 2
+    {
+        glColor3f(1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(50, 190);
+        glVertex2f(150, 190);
+        glEnd();
+    }
+    if (p4.y <= 240 || p6.y <= 240) // Line 3
+    {
+        glColor3f(1.0, 0.0, 1.0);
+        glBegin(GL_LINES);
+        glVertex2f(50, 260);
+        glVertex2f(150, 260);
+        glEnd();
+    }
+}
+
 void animatePosttoRes()
 {
-
     if (!p0x && p0.x >= 91)
     {
         if (p0.x == 91)
@@ -852,7 +913,7 @@ void display()
     else if (screen == 2)
     {
         displayString(200, 750, "INFIX TO POSTFIX EXPRESSION", 1, 'g');
-        if(infixAnimateComplete)
+        if (infixAnimateComplete)
             displayString(35, 500, "Postfix Expression : ", 1, 'g');
         displayString(i0.x, i0.y, singleCharString(infix, 0), 1, 'g');
         displayString(i1.x, i1.y, singleCharString(infix, 1), 1, 'g');
@@ -864,9 +925,11 @@ void display()
         displayString(i7.x, i7.y, singleCharString(infix, 7), 1, 'g');
         displayString(i8.x, i8.y, singleCharString(infix, 8), 1, 'g');
         glCallList(stackDisplayList);
+        displayStackLineIn();
+        if (play)
+            animateIntoPost();
         glutPostRedisplay();
         glutSwapBuffers();
-        animateIntoPost();
     }
     else if (screen == 3)
     {
@@ -926,9 +989,11 @@ void display()
         if (dpSixR)
             displayString(p11.x, p11.y, "6", 1, 'o');
         glCallList(stackDisplayList);
+        displayStackLinePost();
+        if (play)
+            animatePosttoRes();
         glutPostRedisplay();
         glutSwapBuffers();
-        animatePosttoRes();
     }
     else if (screen == 5)
     {
@@ -1005,6 +1070,9 @@ void keyboardFunction(unsigned char key, int x, int y) // Keybard Input Function
         exit(0);
     if (key == 'n' || key == 'N' || key == ' ')
         screen++;
+
+    if (key == 'p' || key == 'P')
+        play = (play == 0) ? 1 : 0;
 }
 
 void myReshape(int w, int h)
